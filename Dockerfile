@@ -1,14 +1,31 @@
 FROM python:3.10-slim
 
-# Установим системные библиотеки (для opencv и pillow)
+# Установка системных пакетов
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
+    build-essential \
+    libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка rembg с полным набором зависимостей
-RUN pip install --no-cache-dir "rembg[all]"
+# Установка Python-зависимостей
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        rembg \
+        onnxruntime \
+        watchdog \
+        aiohttp \
+        uvicorn \
+        fastapi \
+        python-multipart \
+        Pillow
 
-EXPOSE 5000
+# Создание рабочей директории
+WORKDIR /app
 
-CMD ["rembg", "serve"]
+# Копируем FastAPI-приложение
+COPY main.py .
+
+# Открываем порт
+EXPOSE 8000
+
+# Запуск FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
