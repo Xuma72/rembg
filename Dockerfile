@@ -1,21 +1,14 @@
 FROM python:3.10-slim
 
-# Установка системных библиотек
+# Установим системные библиотеки (для opencv и pillow)
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка pip-зависимостей
-RUN pip install --no-cache-dir \
-    rembg \
-    onnxruntime \
-    filetype \
-    watchdog \
-    uvicorn \
-    fastapi
+# Установка rembg с полным набором зависимостей
+RUN pip install --no-cache-dir "rembg[all]"
 
-# Порт для сервера
 EXPOSE 5000
 
-# Запуск сервера rembg
 CMD ["rembg", "serve"]
