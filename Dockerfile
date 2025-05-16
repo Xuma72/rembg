@@ -1,12 +1,12 @@
 FROM python:3.10-slim
 
-# Установка системных библиотек
-RUN apt-get update && apt-get install -y libgl1-mesa-glx && rm -rf /var/lib/apt/lists/*
+# Установка системных зависимостей
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
 
-# Установка необходимых Python-библиотек
-RUN pip install --no-cache-dir rembg onnxruntime click
+# Установка rembg и всех его зависимостей
+RUN pip install --no-cache-dir rembg[all]
 
-# Открытие порта и запуск сервера rembg
-EXPOSE 5000
 
 CMD ["rembg", "serve"]
